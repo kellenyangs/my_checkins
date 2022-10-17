@@ -1,0 +1,53 @@
+name: Checkins
+
+on:
+  workflow_dispatch:
+  watch:
+    types: [ started ]
+  schedule:
+    - cron: '0 9 * * *'
+
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  issues: write
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
+jobs:
+  check-in:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Python
+      run: |
+        sudo apt update && \
+        sudo apt install python3
+
+    - name: requirements
+      run: |
+        pip3 install -r requirements.txt
+
+    - name: Checkin
+      run: |
+        user='${{ secrets.USER }}'
+        pwd='${{ secrets.PWD }}'
+        python3 v2free.py --username ${user} --password ${pwd}
+
+    - name: Commit
+      run: |
+        git config --global user.email kysonyangs@gmail.com
+        git config --global user.name kysonyangs
+        git add .
+        git commit -m "Update flow.log" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
