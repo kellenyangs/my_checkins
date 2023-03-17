@@ -24,30 +24,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Install Python
-      run: |
-        sudo apt update && \
-        sudo apt install python3
+      # Runs a single command using the runners shell
+      - name: 'Set up Python'
+        run: |
+          sudo apt update && \
+          sudo apt install python3
 
-    - name: requirements
-      run: |
-        pip3 install -r requirements.txt
+      - name: 'Install requirements'
+        run: |
+          pip3 install -r ./requirements.txt
 
-    - name: Checkin
-      run: |
-        user='${{ secrets.USER }}'
-        pwd='${{ secrets.PWD }}'
-        python3 v2free.py --username ${user} --password ${pwd}
+      - name: Prepare chromedriver
+        uses: nanasess/setup-chromedriver@v1
 
-    - name: Commit
-      run: |
-        git config --global user.email kysonyangs@gmail.com
-        git config --global user.name kysonyangs
-        git add .
-        git commit -m "Update flow.log" -a
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkin
+        run: |
+          python3 ./v2free.py ${{ secrets.USER }} ${{ secrets.PWD }}
+#          python3 ./cuiun.py ${{ secrets.CUIUN_USERNAME }} ${{ secrets.CUIUN_PASSWORD }}
+#          python3 ./ruike.py ${{ secrets.RUIKE_USERNAME }} ${{ secrets.RUIKE_PASSWORD }}
+
+      - name: Commit
+        run: |
+          git config --global user.email kysonyangs@gmail.com
+          git config --global user.name kysonyangs
+          git add .
+          git commit -m "Update flow.log" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
