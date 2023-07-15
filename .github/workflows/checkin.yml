@@ -3,9 +3,9 @@ name: Checkins
 on:
   workflow_dispatch:
   watch:
-    types: [ started ]
+    types: [started]
   schedule:
-    - cron: '0 9 * * *'
+    - cron: "0 9 * * *"
 
 permissions:
   actions: write
@@ -26,31 +26,24 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
-      - name: 'Set up Python'
-        run: |
-          sudo apt update && \
-          sudo apt install python3
+      - name: "Set up Python"
+        uses: actions/setup-python@v4.7.0
 
-      - name: 'Install requirements'
+      - name: "Install requirements"
         run: |
           pip3 install -r ./requirements.txt
-
-      - name: Prepare chromedriver
-        uses: nanasess/setup-chromedriver@v1
 
       - name: Checkin
         run: |
           python3 ./v2free.py ${{ secrets.USER }} ${{ secrets.PWD }}
-#          python3 ./cuiun.py ${{ secrets.CUIUN_USERNAME }} ${{ secrets.CUIUN_PASSWORD }}
-#          python3 ./ruike.py ${{ secrets.RUIKE_USERNAME }} ${{ secrets.RUIKE_PASSWORD }}
 
       - name: Commit
         run: |
           git config --global user.email kysonyangs@gmail.com
-          git config --global user.name kysonyangs
+          git config --global user.name bots
           git add .
           git commit -m "Update flow.log" -a
       - name: Push changes
