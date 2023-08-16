@@ -40,6 +40,24 @@ jobs:
         run: |
           python3 ./v2free.py ${{ secrets.USER }} ${{ secrets.PWD }}
 
+      - name: "download chromedriver"
+        run: wget https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip
+      - name: "unzip chromedriver"
+        run: unzip chromedriver_linux64.zip
+      - name: "add to path"
+        run: |
+          echo 'export PATH=$PATH:./chromedriver_linux64/chromedriver' >> ~/.bash_profile
+          source ~/.bash_profile
+      - name: "test driver"
+        run: chromedriver --version
+      - name: "Install requirements"
+        run: pip3 install selenium
+      - name: Run ChromeDriver check-in script
+        env:
+          RUIKE_USERNAME: ${{ secrets.RUIKE_USERNAME }}
+          RUIKE_PASSWORD: ${{ secrets.RUIKE_PASSWORD }}
+        run: python3 ruike.py
+
       - name: Commit
         run: |
           git config --global user.email kysonyangs@gmail.com
