@@ -40,14 +40,14 @@ jobs:
         run: |
           python3 ./v2free.py ${{ secrets.USER }} ${{ secrets.PWD }}
 
-      - name: "download chromedriver"
-        run: wget https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip
-      - name: "unzip chromedriver"
-        run: unzip chromedriver_linux64.zip
-      - name: "add to path"
-        run: |
-          echo 'export PATH=$PATH:./chromedriver_linux64/chromedriver' >> ~/.bash_profile
-          source ~/.bash_profile
+      # - name: "download chromedriver"
+      #   run: wget https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip
+      # - name: "unzip chromedriver"
+      #   run: unzip chromedriver_linux64.zip
+      # - name: "add to path"
+      #   run: |
+      #     echo 'export PATH=$PATH:./chromedriver_linux64/chromedriver' >> ~/.bash_profile
+      #     source ~/.bash_profile
       - name: "test driver"
         run: chromedriver --version
       - name: "Install requirements"
